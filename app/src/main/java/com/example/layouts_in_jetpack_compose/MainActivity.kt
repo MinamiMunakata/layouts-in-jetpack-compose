@@ -9,10 +9,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -39,19 +39,19 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             LayoutsInJetpackComposeTheme {
-                SimpleList()
+                LazyList()
             }
         }
     }
 }
 
 @Composable
-fun SimpleList() {
+fun LazyList() {
     // We save the scrolling position with this state that can also
     // be used to programmatically scroll the list
-    val scrollState = rememberScrollState()
-    Column(modifier = Modifier.verticalScroll(scrollState)) {
-        repeat(100) {
+    val scrollState = rememberLazyListState()
+    LazyColumn(state = scrollState) {
+        items(100) {
             Text("Item #$it")
         }
     }
@@ -122,6 +122,6 @@ fun PhotographerCard(modifier: Modifier = Modifier) {
 @Composable
 fun Preview() {
     LayoutsInJetpackComposeTheme {
-        SimpleList()
+        LazyList()
     }
 }
