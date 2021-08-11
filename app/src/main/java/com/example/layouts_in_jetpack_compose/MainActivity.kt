@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,6 +52,40 @@ class MainActivity : ComponentActivity() {
         setContent {
             LayoutsInJetpackComposeTheme {
                 ImageList()
+            }
+        }
+    }
+}
+
+@Composable
+fun MyOwnColumn(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Layout(
+        modifier = modifier,
+        content = content,
+    ) { measurables, constraints ->
+        // measure and position children given constraints logic here
+        // Don't constrain child views further, measure them with given constraints
+        // List of measured children
+        val placeable = measurables.map { measurable ->
+            // Measure each child
+            measurable.measure(constraints)
+        }
+
+        // Track the y co-ord we have placed children up to
+        var yPosition = 0
+
+        // Set the size of the layout as big as it can
+        layout(constraints.maxWidth, constraints.maxHeight) {
+            // Place children in the parent layout
+            placeable.forEach { placeable ->
+                // Position item on the screen
+                placeable.placeRelative(x = 0, y = yPosition)
+
+                // Record the y co-ord placed up to
+                yPosition += placeable.height
             }
         }
     }
@@ -112,6 +147,16 @@ fun ImageList() {
 }
 
 @Composable
+fun BodyContent(modifier: Modifier = Modifier) {
+    MyOwnColumn(modifier.padding(8.dp)) {
+        Text("MyOwnColumn")
+        Text("places items")
+        Text("vertically.")
+        Text("We've done it by hand!")
+    }
+}
+
+@Composable
 fun LazyList() {
     // We save the scrolling position with this state that can also
     // be used to programmatically scroll the list
@@ -142,14 +187,6 @@ fun LayoutsCodelab() {
         }
     ) { innerPadding ->
         BodyContent(Modifier.padding(innerPadding))
-    }
-}
-
-@Composable
-fun BodyContent(modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-        Text(text = "Hi there!")
-        Text(text = "Thanks for going through the Layouts codelab")
     }
 }
 
@@ -204,13 +241,13 @@ fun Modifier.firstBaselineToTop(
     }
 )
 
-//@Preview
-//@Composable
-//fun Preview() {
-//    LayoutsInJetpackComposeTheme {
-//        ImageList()
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+fun Preview() {
+    LayoutsInJetpackComposeTheme {
+        BodyContent()
+    }
+}
 
 //@Preview(showBackground = true)
 //@Composable
@@ -220,10 +257,10 @@ fun Modifier.firstBaselineToTop(
 //    }
 //}
 
-@Preview(showBackground = true)
-@Composable
-fun TextWithPaddingToBaselinePreview() {
-    LayoutsInJetpackComposeTheme() {
-        Text("Hi there!", Modifier.firstBaselineToTop(32.dp))
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun TextWithPaddingToBaselinePreview() {
+//    LayoutsInJetpackComposeTheme() {
+//        Text("Hi there!", Modifier.firstBaselineToTop(32.dp))
+//    }
+//}
