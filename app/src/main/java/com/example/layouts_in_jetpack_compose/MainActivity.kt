@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             LayoutsInJetpackComposeTheme {
-                ImageList()
+                BodyContent()
             }
         }
     }
@@ -249,15 +249,21 @@ fun ImageList() {
     }
 }
 
+val topics = listOf(
+    "Arts & Crafts", "Beauty", "Books", "Business", "Comics", "Culinary",
+    "Design", "Fashion", "Film", "History", "Maths", "Music", "People", "Philosophy",
+    "Religion", "Social sciences", "Technology", "TV", "Writing"
+)
+
 @Composable
 fun BodyContent(modifier: Modifier = Modifier) {
-    val topics = listOf(
-        "Arts & Crafts", "Beauty", "Books", "Business", "Comics", "Culinary",
-        "Design", "Fashion", "Film", "History", "Maths", "Music", "People", "Philosophy",
-        "Religion", "Social sciences", "Technology", "TV", "Writing"
-    )
-
-    Row(modifier = modifier.horizontalScroll(rememberScrollState())) {
+    Row(
+        modifier = modifier
+            .background(color = Color.LightGray)
+            .padding(16.dp)
+            .size(200.dp)
+            .horizontalScroll(rememberScrollState())
+    ) {
         StaggeredGrid(modifier = modifier, rows = 5) {
             for (topic in topics) {
                 Chip(modifier = Modifier.padding(8.dp), text = topic)
